@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.widget.RelativeLayout;
 import android.widget.ImageView;
 import android.content.Context;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     Bitmap bitmap;
     Button circleButton;
     Button rectButton;
-    Shape[] shapes;
+    Button clear;
+    Vector<Shape> vector;
     int numberOfCircles;
     int numberOfRectanlges;
 
@@ -35,47 +37,83 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         text = (TextView) findViewById(R.id.textView);;
-        shape1 = ShapeFactory.getShape(this,"Circle");
-        shape2 = ShapeFactory.getShape(this,"Rectangle");
 
         drawView = new Circle(this);
         canvas = (RelativeLayout) findViewById(R.id.canvasLayout);
-        shapes = new Shape[10];
-
+        vector = new Vector<Shape>();
         circleButton = (Button) findViewById(R.id.cButton);
         rectButton = (Button) findViewById(R.id.rectangleButton);
+        clear = (Button) findViewById(R.id.clearButton);
+
         final Context context = this.getApplicationContext();
-
-
-        text.setText(shape1.getShapeType()+ " " + shape2.getShapeType());
-
+        updateShapesCount();
 
         circleButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { adjustShapesAlpha();
+            public void onClick(View v) {
 
-                    shape1 = ShapeFactory.getShape(context,"Circle");;
+       //         adjustShapesAlpha();
+                shape1 = ShapeFactory.getShape(context,"Circle");
+                vector.add(shape1);
+
+                canvas.addView(shape1);
+                updateShapesCount();
+        } });
+
+
+        rectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+        public void onClick(View v) {
+            adjustShapesAlpha();
+            shape1 =ShapeFactory.getShape(context,"Rectangle");;
+            vector.add(shape1);
 
             canvas.addView(shape1); updateShapesCount();
         } });
 
 
-
-        rectButton.setOnClickListener(new View.OnClickListener() { @Override
-        public void onClick(View v) { adjustShapesAlpha();
-
-                shape1 =ShapeFactory.getShape(context,"Rectangle");;
-
-            canvas.addView(shape1); updateShapesCount();
-        } });
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(int i = 0;i<vector.size();i++){
+                    Shape toDelete = vector.get(i);
+                    toDelete.setShapeAlpha(0); //makes all shapes in vector invisible
+                }
+                vector.clear(); //empties vector
+                updateShapesCount();
+            } });
     }
 
-    void adjustShapesAlpha(){
 
+
+    void adjustShapesAlpha(){
+        if(vector.isEmpty())
+            return;
+        for (int i = 0; i < vector.size(); i++) { //loop to search though all shapes in vector
+            Shape toAdjust = vector.get(i);
+            toAdjust.setShapeAlpha(toAdjust.getShapeAlpha()-0.2f);// lowers alpha of each element by 0.2f
+
+            if(toAdjust.getShapeAlpha()<=0){ //removes vector if it's alpha is 0 or less
+                toAdjust.removeShape();
+                vector.remove(toAdjust);
+            }
+        }
     }
 
     void updateShapesCount(){
-        text.setText(numberOfRectanlges+ " Rectangles" +numberOfCircles+ " Circles");
+        numberOfCircles=0;
+        numberOfRectanlges=0;
+
+        if (vector.isEmpty()==false) { //only bothers to count if vector isn't empty
+            for (int i = 0; i < vector.size(); i++) { //loop to search though all shapes in vector
+                Shape toCount = vector.get(i);
+                if (toCount.getShapeType() == "Circle")
+                    numberOfCircles += 1; //count circles
+                if (toCount.getShapeType() == "Rectangle")
+                    numberOfRectanlges += 1; //count rectangles
+            }
+        }
+        text.setText(numberOfRectanlges+ " Rectangles " +numberOfCircles+ " Circles");
 
     }
 }
