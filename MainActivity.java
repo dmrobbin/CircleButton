@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.ImageView;
 import android.content.Context;
 import java.util.Vector;
+import android.support.v7.app.ActionBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.hide();
+        }
+
         text = (TextView) findViewById(R.id.textView);;
 
         drawView = new Circle(this);
@@ -55,22 +61,24 @@ public class MainActivity extends AppCompatActivity {
                 adjustShapesAlpha();
                 shape1 = ShapeFactory.getShape(context,"Circle");
                 vector.add(shape1);
+                shape1.setShapeAlpha(1.0f);
                 canvas.addView(shape1);
                 updateShapesCount();
 
-           //     text.setText("alpha "+ vector.capacity());
-        } });
+                //     text.setText("alpha "+ vector.capacity());
+            } });
 
 
         rectButton.setOnClickListener(new View.OnClickListener() {
             @Override
-        public void onClick(View v) {
-            adjustShapesAlpha();
-            shape1 =ShapeFactory.getShape(context,"Rectangle");;
-            vector.add(shape1);
+            public void onClick(View v) {
+                adjustShapesAlpha();
+                shape1 =ShapeFactory.getShape(context,"Rectangle");;
+                vector.add(shape1);
+                shape1.setShapeAlpha(1.0f);
 
-            canvas.addView(shape1); updateShapesCount();
-        } });
+                canvas.addView(shape1); updateShapesCount();
+            } });
 
 
         clear.setOnClickListener(new View.OnClickListener() {
