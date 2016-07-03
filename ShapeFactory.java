@@ -1,8 +1,5 @@
 package com.example.xross.shapesapp;
 
-/**
- * Created by Xross on 6/29/16.
- */
 import android.content.Context;
 
 public class ShapeFactory {

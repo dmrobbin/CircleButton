@@ -52,12 +52,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-       //         adjustShapesAlpha();
+                adjustShapesAlpha();
                 shape1 = ShapeFactory.getShape(context,"Circle");
                 vector.add(shape1);
-
                 canvas.addView(shape1);
                 updateShapesCount();
+
+           //     text.setText("alpha "+ vector.capacity());
         } });
 
 
@@ -77,11 +78,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 for(int i = 0;i<vector.size();i++){
                     Shape toDelete = vector.get(i);
-                    toDelete.setShapeAlpha(0); //makes all shapes in vector invisible
+                    toDelete.setVisibility(View.GONE); //gets rid of all shapes
                 }
                 vector.clear(); //empties vector
                 updateShapesCount();
             } });
+    }
+
+    void shiftVector (Vector v){
+        for(int i =0; i<v.size();i++){
+
+        }
+
     }
 
 
@@ -91,11 +99,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         for (int i = 0; i < vector.size(); i++) { //loop to search though all shapes in vector
             Shape toAdjust = vector.get(i);
-            toAdjust.setShapeAlpha(toAdjust.getShapeAlpha()-0.2f);// lowers alpha of each element by 0.2f
+            float currentAlpha = toAdjust.getShapeAlpha();
 
-            if(toAdjust.getShapeAlpha()<=0){ //removes vector if it's alpha is 0 or less
+            if(currentAlpha<=0.0f){ //removes vector if it's alpha is 0 or less
                 toAdjust.removeShape();
                 vector.remove(toAdjust);
+            }else {
+                toAdjust.setShapeAlpha(currentAlpha - 0.2f);// lowers alpha of each element by 0.2f
             }
         }
     }
@@ -113,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     numberOfRectanlges += 1; //count rectangles
             }
         }
-        text.setText(numberOfRectanlges+ " Rectangles " +numberOfCircles+ " Circles");
+        text.setText(numberOfRectanlges+ " Rectangles " +numberOfCircles+ " Circles ");
 
     }
 }
